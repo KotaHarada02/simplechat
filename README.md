@@ -42,7 +42,7 @@ Amazon Bedrock を使用したチャットボットアプリケーションで�
 ### 1. リポジトリのクローン
 
 ```
-git clone https://github.com/keisskaws/simplechat
+git clone https://github.com/KotaHarada02/simplechat.git
 cd simplechat
 ```
 
