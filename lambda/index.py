@@ -19,7 +19,7 @@ bedrock_client = None
 
 # モデルID
 MODEL_ID = os.environ.get("MODEL_ID", "google/gemma-2-2b-jpn-it")
-API_URL = "https://c6c3-34-23-80-188.ngrok-free.app/generate"
+API_URL = "https://a814-35-196-164-95.ngrok-free.app/".rstrip('/')
 SYSTEM_PROMPT = (
     "以下は会話の履歴です。あくまでコンテキストの参照用です。\n"
     "これらを出力に含めず、必ず「アシスタント: 」以降の応答のみを返してください。\n"
@@ -28,43 +28,7 @@ SYSTEM_PROMPT = (
 def invoke_model(payload: dict) -> dict:
     data = json.dumps(payload).encode('utf-8')
     req = urllib.request.Request(
-        API_URL,
-        data=data,
-        headers={'Content-Type': 'application/json'},
-        method='POST'
-    )
-    with urllib.request.urlopen(req) as resp:
-        if resp.status != 200:
-            raise Exception(f"API error: {resp.status}")
-        result = json.load(resp)
-        print(result)
-        return result
-    
-def build_prompt(messages: list[dict]) -> str:
-    lines = []
-    lines.append(SYSTEM_PROMPT.rstrip())
-    for msg in messages:
-        # ロール名を日本語にマッピング
-        role = "ユーザ" if msg.get("role") == "user" else "アシスタント"
-        # content は [{"text": ...}, …] のリストなので、全ての text をつなげる
-        texts = [c.get("text", "") for c in msg.get("content", [])]
-        content_str = "".join(texts)
-        lines.append(f"{role}: {content_str}")
-    # モデルに続きを生成させるために、最後にアシスタントの開始行を追加
-    lines.append("アシスタント: ")
-    # 改行で結合して一つの文字列に
-    return "\n".join(lines)
-
-API_URL = "https://c6c3-34-23-80-188.ngrok-free.app/generate"
-SYSTEM_PROMPT = (
-    "以下は会話の履歴です。あくまでコンテキストの参照用です。\n"
-    "これらを出力に含めず、必ず「アシスタント: 」以降の応答のみを返してください。\n"
-)
-
-def invoke_model(payload: dict) -> dict:
-    data = json.dumps(payload).encode('utf-8')
-    req = urllib.request.Request(
-        API_URL,
+        f"{API_URL}/generate",
         data=data,
         headers={'Content-Type': 'application/json'},
         method='POST'
